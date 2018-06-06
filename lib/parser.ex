@@ -1,12 +1,6 @@
 defmodule Parser do
   def parse(tokens) do
-    IO.inspect(tokens)
-
     {ast, rest} = expr(tokens)
-
-    IO.puts("")
-    IO.inspect(rest)
-    IO.inspect(ast)
   end
 
   def expr(tokens) do

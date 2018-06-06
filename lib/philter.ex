@@ -16,7 +16,9 @@ defmodule Philter do
       # IO.inspect(token_list)
 
       Lexer.scan_tokens(expr, [])
+      |> IO.inspect(label: "Tokens")
       |> Parser.parse()
+      |> IO.inspect(label: "AST")
 
       repl()
     end
