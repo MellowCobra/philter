@@ -1,20 +1,22 @@
 Terminals:
 
-*   LPR `(`
-*   RPR `)`
-*   MINUS `-`
-*   PLUS `+`
-*   STAR `*`
-*   SLASH `/`
-*   INT `1234`
-*   EOF `\0`
+-   LPR `(`
+-   RPR `)`
+-   MINUS `-`
+-   PLUS `+`
+-   STAR `*`
+-   SLASH `/`
+-   INT `1234`
+-   EOF `\0`
 
 Productions:
 
-    expr            → term (( MUL | DIV ) term)*
+    expr            → term
+                    | term ( STAR | SLASH ) expr
                     ;
 
-    term            → factor (( PLUS | MINUS ) factor)*
+    term            → factor
+                    | factor ( PLUS | MINUS ) term
                     ;
 
     factor          → INT
