@@ -1,18 +1,24 @@
 defmodule Philter do
-  @moduledoc """
-  Documentation for Philter.
-  """
+  def start do
+    IO.puts("Welcome to the Philer REPL!")
+    IO.puts("Enter an integer arithmetic expression, and I will convert it to a token stream")
+    repl()
+  end
 
-  @doc """
-  Hello world.
+  def repl do
+    input = IO.gets("-> ") |> String.trim()
 
-  ## Examples
+    unless input == "quit" do
+      expr = input |> to_charlist
 
-      iex> Philter.hello
-      :world
+      # token_list = Lexer.scan_tokens(expr, [])
 
-  """
-  def hello do
-    :world
+      # IO.inspect(token_list)
+
+      Lexer.scan_tokens(expr, [])
+      |> Parser.parse()
+
+      repl()
+    end
   end
 end
