@@ -22,22 +22,25 @@ The interpreter has the following components, each of which transforms given inp
 
 Main function: `scan_tokens(charlist) -> [Token]`
 
-**Input:** the source expression _charlist_
-**Output:** a list of tokens _[Token]_
+**Input:** the source expression `charlist`
+
+**Output:** a list of tokens `[Token]`
 
 ### Parser
 
 Main function: `parse([Token]) -> Expr`
 
-**Input:** a list of tokens _[Token]_
-**Output:** an expression AST _Expr_
+**Input:** a list of tokens `[Token]`
+
+**Output:** an expression AST `Expr`
 
 ### Interpreter
 
 Main function: `interpret(Expr) -> Int`
 
-**Input:** an expression AST _Expr_
-**Output:** the value of the calculated expression _Int_
+**Input:** an expression AST `Expr`
+
+**Output:** the value of the calculated expression `Int`
 
 ## Next Steps
 
