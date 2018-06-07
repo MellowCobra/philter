@@ -14,9 +14,9 @@ Run in iex with
 
 The interpreter has the following components, each of which transforms given input into a specific output. The philter driver then pipes said output into the next component.
 
--   Lexer: scans charlist and converts to list of tokens
--   Parser: parses token list into an Abstract Syntax Tree (AST)
--   Interpreter: walks the AST and interprets each node
+-   [Lexer](###Lexer): scans charlist and converts to list of tokens
+-   [Parser](###Parser): parses token list into an Abstract Syntax Tree (AST)
+-   [Interpreter](###Interpreter): walks the AST and interprets each node
 
 ### Lexer
 
