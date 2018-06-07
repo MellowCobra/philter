@@ -19,6 +19,8 @@ defmodule Philter do
       |> IO.inspect(label: "Tokens")
       |> Parser.parse()
       |> IO.inspect(label: "AST")
+      |> Interpreter.interpret()
+      |> IO.inspect(label: "Interpreted result")
 
       repl()
     end
