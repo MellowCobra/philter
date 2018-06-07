@@ -67,7 +67,6 @@ defmodule Parser do
   end
 
   defp match(current, types) do
-    matches = Enum.member?(types, current.type)
-    matches
+    Enum.member?(types, current.type)
   end
 end
