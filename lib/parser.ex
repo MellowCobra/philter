@@ -61,8 +61,17 @@ defmodule Parser do
       match(current, [:INT]) ->
         {%Expr.Literal{value: current.value}, rest}
 
+      match(current, [:LPR]) ->
+        case expr(rest) do
+          {expression, [%Token{lexeme: ")", type: :RPR} | rest]} ->
+            {expression, rest}
+
+          {_expression, _} ->
+            raise RuntimeError, message: "Missing ')' at end of grouping expression"
+        end
+
       true ->
-        raise RuntimeError, message: "Expect INT literal"
+        raise RuntimeError, message: "Expect expression"
     end
   end
 

@@ -10,33 +10,64 @@ defmodule Lexer do
       [current | rest] = source
 
       # If whitespace, consume and keep trucking
-      if is_whitespace(current) do
-        scan_tokens(rest, token_list)
+      cond do
+        is_whitespace(current) ->
+          scan_tokens(rest, token_list)
+
+        is_alpha(current) ->
+          {next_token, rest} = identifier(rest, [current])
+          scan_tokens(rest, [next_token | token_list])
+
+        is_digit(current) ->
+          {next_token, rest} = int(source)
+          scan_tokens(rest, [next_token | token_list])
+
+        [current] == '+' ->
+          next_token = %Token{lexeme: to_string([current]), type: :PLUS}
+          scan_tokens(rest, [next_token | token_list])
+
+        [current] == '-' ->
+          next_token = %Token{lexeme: to_string([current]), type: :MINUS}
+          scan_tokens(rest, [next_token | token_list])
+
+        [current] == '*' ->
+          next_token = %Token{lexeme: to_string([current]), type: :STAR}
+          scan_tokens(rest, [next_token | token_list])
+
+        [current] == '/' ->
+          next_token = %Token{lexeme: to_string([current]), type: :SLASH}
+          scan_tokens(rest, [next_token | token_list])
+
+        [current] == '(' ->
+          next_token = %Token{lexeme: to_string([current]), type: :LPR}
+          scan_tokens(rest, [next_token | token_list])
+
+        [current] == ')' ->
+          next_token = %Token{lexeme: to_string([current]), type: :RPR}
+          scan_tokens(rest, [next_token | token_list])
+
+        [current] == '=' ->
+          next_token = %Token{lexeme: to_string([current]), type: :EQUAL}
+          scan_tokens(rest, [next_token | token_list])
+
+        true ->
+          raise RuntimeError, message: "unknown token \"" <> to_string([current]) <> "\""
+      end
+    end
+  end
+
+  def identifier(source, chars \\ []) do
+    if source == [] do
+      lexeme = chars |> Enum.reverse() |> to_string
+      {%Token{lexeme: lexeme, type: :IDENTIFIER, value: lexeme}, []}
+    else
+      [current | rest] = source
+
+      if is_alpha(current) || is_digit(current) do
+        identifier(rest, [current | chars])
       else
-        cond do
-          is_digit(current) ->
-            {next_token, rest} = int(source)
-            scan_tokens(rest, [next_token | token_list])
-
-          [current] == '+' ->
-            next_token = %Token{lexeme: to_string([current]), type: :PLUS}
-            scan_tokens(rest, [next_token | token_list])
-
-          [current] == '-' ->
-            next_token = %Token{lexeme: to_string([current]), type: :MINUS}
-            scan_tokens(rest, [next_token | token_list])
-
-          [current] == '*' ->
-            next_token = %Token{lexeme: to_string([current]), type: :STAR}
-            scan_tokens(rest, [next_token | token_list])
-
-          [current] == '/' ->
-            next_token = %Token{lexeme: to_string([current]), type: :SLASH}
-            scan_tokens(rest, [next_token | token_list])
-
-          true ->
-            raise RuntimeError, message: "unknown token \"" <> to_string([current]) <> "\""
-        end
+        lexeme = chars |> Enum.reverse() |> to_string
+        {%Token{lexeme: lexeme, type: :IDENTIFIER, value: lexeme}, source}
       end
     end
   end
@@ -59,17 +90,15 @@ defmodule Lexer do
     end
   end
 
+  def is_alpha(char) do
+    ([char] >= 'a' && [char] <= 'z') || ([char] >= 'A' && [char] <= 'Z') || [char] == '_'
+  end
+
   def is_digit(char) do
-    cond do
-      [char] >= '0' && [char] <= '9' -> true
-      true -> false
-    end
+    [char] >= '0' && [char] <= '9'
   end
 
   def is_whitespace(char) do
-    cond do
-      [char] in ['\n', '\t', '\s'] -> true
-      true -> false
-    end
+    [char] in ['\n', '\t', '\s']
   end
 end

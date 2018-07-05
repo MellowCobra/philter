@@ -20,4 +20,5 @@ Productions:
                     ;
 
     factor          → INT
+                    | ( expr )
                     ;
