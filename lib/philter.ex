@@ -11,16 +11,12 @@ defmodule Philter do
     unless input == "quit" do
       expr = input |> to_charlist
 
-      # token_list = Lexer.scan_tokens(expr, [])
-
-      # IO.inspect(token_list)
-
       Lexer.scan_tokens(expr, [])
       |> IO.inspect(label: "Tokens")
       |> Parser.parse()
       |> IO.inspect(label: "AST")
       |> Interpreter.interpret()
-      |> IO.inspect(label: "Interpreted result")
+      |> IO.inspect(label: "Interpreted result and environment")
 
       repl()
     end

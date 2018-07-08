@@ -1,7 +1,64 @@
 defmodule Parser do
   def parse(tokens) do
-    {ast, _} = expr(tokens)
+    {ast, _} = compound_stmt(tokens)
     ast
+  end
+
+  def compound_stmt(tokens, statements \\ []) do
+    {statement, rest} = stmt(tokens)
+    # NOTE that this is putting statements into the statement list in REVERSE order
+    statements = Enum.reverse([statement | Enum.reverse(statements)])
+
+    case rest do
+      [current | rest] ->
+        cond do
+          match(current, [:SEMI]) ->
+            {compound, rest} = compound_stmt(rest, statements)
+            # Remember we are pushing the statements in REVERSE order
+            {%Stmt.Compound{statements: compound.statements}, rest}
+
+            # true ->
+            #   {%Stmt.Compound{statements: statements}, rest}
+        end
+
+      [] ->
+        {%Stmt.Compound{statements: statements}, []}
+    end
+  end
+
+  def stmt(tokens) do
+    case tokens do
+      [current | rest] ->
+        cond do
+          match(current, [:PRINT]) ->
+            print_stmt(rest)
+
+          match(current, [:VAR]) ->
+            var_stmt(rest)
+
+          true ->
+            raise RuntimeError, message: "Expected a statement"
+        end
+
+      _ ->
+        raise RuntimeError, message: "Expected a statement"
+    end
+  end
+
+  def print_stmt(tokens) do
+    {expression, rest} = expr(tokens)
+    {%Stmt.Print{expr: expression}, rest}
+  end
+
+  def var_stmt(tokens) do
+    case tokens do
+      [id, %Token{lexeme: "=", type: :EQUAL} | rest] ->
+        {expression, rest} = expr(rest)
+        {%Stmt.Assign{name: id, expr: expression}, rest}
+
+      _ ->
+        raise RuntimeError, message: "There is a problem with your var statement"
+    end
   end
 
   def expr(tokens) do
@@ -70,9 +127,17 @@ defmodule Parser do
             raise RuntimeError, message: "Missing ')' at end of grouping expression"
         end
 
+      match(current, [:IDENTIFIER]) ->
+        var_expr(tokens)
+
       true ->
         raise RuntimeError, message: "Expect expression"
     end
+  end
+
+  def var_expr(tokens) do
+    [current | rest] = tokens
+    {%Expr.Var{name: current}, rest}
   end
 
   defp match(current, types) do

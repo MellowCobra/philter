@@ -38,6 +38,10 @@ defmodule Lexer do
           next_token = %Token{lexeme: to_string([current]), type: :SLASH}
           scan_tokens(rest, [next_token | token_list])
 
+        [current] == ';' ->
+          next_token = %Token{lexeme: to_string([current]), type: :SEMI}
+          scan_tokens(rest, [next_token | token_list])
+
         [current] == '(' ->
           next_token = %Token{lexeme: to_string([current]), type: :LPR}
           scan_tokens(rest, [next_token | token_list])
@@ -59,7 +63,8 @@ defmodule Lexer do
   def identifier(source, chars \\ []) do
     if source == [] do
       lexeme = chars |> Enum.reverse() |> to_string
-      {%Token{lexeme: lexeme, type: :IDENTIFIER, value: lexeme}, []}
+      token = check_keyword(lexeme, %Token{lexeme: lexeme, type: :IDENTIFIER, value: lexeme})
+      {token, []}
     else
       [current | rest] = source
 
@@ -67,8 +72,17 @@ defmodule Lexer do
         identifier(rest, [current | chars])
       else
         lexeme = chars |> Enum.reverse() |> to_string
-        {%Token{lexeme: lexeme, type: :IDENTIFIER, value: lexeme}, source}
+        token = check_keyword(lexeme, %Token{lexeme: lexeme, type: :IDENTIFIER, value: lexeme})
+        {token, source}
       end
+    end
+  end
+
+  def check_keyword(lexeme, default_token) do
+    case lexeme do
+      "print" -> %Token{lexeme: lexeme, type: :PRINT}
+      "var" -> %Token{lexeme: lexeme, type: :VAR}
+      _ -> default_token
     end
   end
 
