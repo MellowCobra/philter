@@ -1,7 +1,7 @@
 defmodule Philter do
   def start do
     IO.puts("Welcome to the Philer REPL!")
-    IO.puts("Enter an integer arithmetic expression, and I will convert it to a token stream")
+    IO.puts("Enter a list of statements (separated by ';'), and I will interpret it")
     repl()
   end
 

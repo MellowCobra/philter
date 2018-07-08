@@ -28,25 +28,26 @@ Main function: `scan_tokens(charlist) -> [Token]`
 
 ### Parser
 
-Main function: `parse([Token]) -> Expr`
+Main function: `parse([Token]) -> Compound_Stmt`
 
 **Input:** a list of tokens `[Token]`
 
-**Output:** an expression AST `Expr`
+**Output:** a compound statement AST `Compound_Stmt`
 
 ### Interpreter
 
-Main function: `interpret(Expr) -> Int`
+Main function: `interpret() -> :ok || :error`
 
-**Input:** an expression AST `Expr`
+**Input:** a compound statement AST `Compound_Stmt`
 
-**Output:** the value of the calculated expression `Int`
+**Output:** :ok if interpretation succeeded. Currently doesn't handle errors
 
 ## Next Steps
 
-1.  Add grouping expressions with parentheses
-2.  Add variables
-    -   Add environments to store variables
-    -   Add IDENTIFIER tokens and scan them
-    -   Add variable declaration expressions
-    -   Add variable usage expressions
+1.  Add file input (currently only reads and interprets a single line from REPL)
+2.  Change statements to expressions
+    -   Print statement: return the value of its expression after printing it
+    -   Var declaration: return the value of its expression after assigning it
+    -   Compound statement: return the value of the last expression in the list
+3.  Add boolean expressions
+4.  Better error handling!
